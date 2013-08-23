@@ -7,15 +7,15 @@ require "docfive/version"
 Gem::Specification.new do |s|
   s.name        = "docfive"
   s.version     = Docfive::VERSION
-  s.authors     = ["TODO: Your name"]
-  s.email       = ["TODO: Your email"]
-  s.homepage    = "TODO"
-  s.summary     = "TODO: Summary of Docfive."
-  s.description = "TODO: Description of Docfive."
+  s.authors     = ["happy"]
+  s.email       = ["andywang7259@gmail.com"]
+  s.homepage    = "http://github.com/xiuxian123/docfive"
+  s.summary     = "Summary of Docfive."
+  s.description = "Description of Docfive."
 
-  s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
+  s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
 
-  s.add_dependency "rails", "~> 4.0.0"
+  # s.add_dependency "rails", "~> 4.0.0"
 
-  s.add_development_dependency "sqlite3"
+  # s.add_development_dependency "sqlite3"
 end
