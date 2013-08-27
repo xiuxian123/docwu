@@ -13,13 +13,17 @@ module Docwu
       @folders             = {}
 
       _perform_validate_attrs
+
       _perform_parse_context
     end
 
     # 输出
-    def output!
+    def generate
+      # 删除要输出的路径
+      FileUtils.rm_rf(self.output_path)
+
       self.folders.each do |space, folder|
-        folder.output!
+        folder.generate
       end
     end
 
@@ -32,6 +36,7 @@ module Docwu
 
     # 解析上下文
     def _perform_parse_context
+
       self.doc_paths.each do |doc|
         if File.directory?(doc[:path])
           @folders[doc[:space]] = ::Docwu::Folder.new(

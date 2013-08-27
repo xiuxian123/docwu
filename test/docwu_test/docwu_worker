@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-require '../docwu/lib/docwu'
+require '../../lib/docwu'
 
 # docwu 的配置
 Docwu.configure do |config|
@@ -13,4 +13,6 @@ Docwu.configure do |config|
 end
 
 # 输入html
-Docwu.output!
+Docwu.generate
+
+Docwu::Server.process

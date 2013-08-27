@@ -1,6 +1,7 @@
 ---------
 
 layout: htllo world
+title: 'Hello Wolrd'
 
 -------
 
