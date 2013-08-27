@@ -2,11 +2,16 @@ PATH
   remote: .
   specs:
     docwu (0.0.1)
+      coderay
+      mustache_render
+      redcarpet
 
 GEM
   remote: http://rubygems.org/
   specs:
+    coderay (1.0.9)
     mustache_render (0.0.24)
+    redcarpet (3.0.0)
 
 PLATFORMS
   ruby
