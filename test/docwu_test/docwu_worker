@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+require '../docwu/lib/docwu'
+
+# docwu 的配置
+Docwu.configure do |config|
+  config.doc_paths          = [
+    { :path => "#{File.dirname(__FILE__)}/resources/doc1", :name => "document 文档1", :space => 'doc1' },
+    { :path => "#{File.dirname(__FILE__)}/resources/doc2", :name => 'document 文档2', :space => 'doc2' }
+  ]
+
+  config.output_path        = "#{File.dirname(__FILE__)}/resources/output"                       # HTML输出的地方
+  config.default_marktype   = :markdown   # 文档的富文本类型
+end
+
+# 输入html
+Docwu.output!
