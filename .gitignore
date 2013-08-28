@@ -3,3 +3,4 @@ log/*.log
 pkg/
 
 /tags
+/test/docwu_test/resources/output
