@@ -13,7 +13,7 @@ GEM
     coderay (1.0.9)
     daemons (1.1.9)
     eventmachine (1.0.3)
-    mustache_render (0.0.24)
+    mustache_render (0.0.25)
     rack (1.5.2)
     redcarpet (3.0.0)
     thin (1.5.1)

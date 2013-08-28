@@ -12,37 +12,33 @@ module Docwu
     end
   end
 
+  #
+  #  src_paths
+  #  asset_paths
+  #  layout_paths
+  #  output_path
+  #
   class Config
-    def output_type= type
-      @output_type ||= type
+    attr_reader :src_paths, :asset_paths, :layout_paths, :output_path, :data
+
+    def data= a
+      @data ||= a
     end
 
-    def output_type
-      @output_type
+    def src_paths= a
+      @src_paths ||= a
     end
 
-    def default_marktype= type
-      @default_marktype ||= type
+    def asset_paths= a
+      @asset_paths ||= a
     end
 
-    def default_marktype
-      @default_marktype
+    def layout_paths= a
+      @layout_paths ||= a
     end
 
-    def output_path= path
-      @output_path ||= path
-    end
-
-    def output_path
-      @output_path
-    end
-
-    def doc_paths= paths
-      @doc_paths ||= paths
-    end
-
-    def doc_paths
-      @doc_paths
+    def output_path= a
+      @output_path ||= a
     end
   end
 end
