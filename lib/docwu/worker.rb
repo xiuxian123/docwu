@@ -51,9 +51,9 @@ module Docwu
       # 静态文件目录 --------------------------------------------------------
       @asset_paths = []
 
-      (attrs[:asset_paths] || Docwu.config.asset_paths || []).each do |_path|
+      (Docwu.config.asset_paths || []).each do |_path|
         if File.exists?(_path) && File.directory?(_path)
-          @asset_paths < _path
+          @asset_paths << _path
         end
       end
 

@@ -93,13 +93,54 @@ module Docwu
       _content_text = ''
       _content_data = {}
 
-      _parse_content = _content.to_s.split(/---+\n/)
+      # 读取页面的配置
+      content_lines = _content.split(/\n/)  # 根据换行分割
 
-      if _parse_content.size > 2 && _parse_content.first.to_s == ''
-        _content_text << _parse_content[2]
-        # 从上下文中读取配置
-        _content_data.merge!(::YAML.load(_parse_content[1]))
+      _data_lines = []
+      _text_lines = []
+
+      _data_num_a = -1
+      _data_num_b = -1
+
+      content_lines.each_with_index do |line, index|
+        if line =~ /--+/
+          if _data_num_a == -1
+            _data_num_a = index
+          elsif _data_num_b == -1
+            _data_num_b = index
+          else
+            break
+          end
+        end
       end
+
+      if _data_num_a > -1 && _data_num_b > -1
+        # 说明有配置信息
+        _yaml = ::YAML.load(content_lines[_data_num_a + 1, _data_num_b -1].join("\n"))
+
+        if _yaml.is_a?(Hash)
+          _content_data.merge!(_yaml)
+        end
+
+        _content_text = content_lines[_data_num_b + 1, content_lines.size].join("\n")
+      else # 无页面配置信息
+        _content_text = _content
+      end
+
+      # _parse_content = _content.to_s.split(/---+\n/)
+
+      # if _parse_content.size > 2 && _parse_content.first.to_s == ''
+      #   # 从上下文中读取配置
+      #   _yaml = ::YAML.load(_parse_content[1])
+
+      #   if _yaml.is_a?(Hash)
+      #     _content_data.merge!(_yaml)
+      #   end
+
+      #   _content_text << _parse_content[2..(_parse_content.size)].join('')
+      # else
+      #   _content_text << _content
+      # end
 
       {:data => _content_data, :text => _content_text}
     end

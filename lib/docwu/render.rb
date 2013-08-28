@@ -1,3 +1,7 @@
+require 'redcarpet'
+require 'coderay'
+require "nokogiri"
+
 module Docwu
   class Render
     class << self
@@ -21,7 +25,12 @@ module Docwu
       when 'markdown'
         _mark_options = [:hard_wrap, :autolink, :no_intraemphasis, :fenced_code, :gh_blockcode]
 
-        content_result << ::RedcarpetCompat.new(content_text, *_mark_options).to_html
+        content_result << ::Docwu::Utils.syntax_highlighter(
+          ::RedcarpetCompat.new(content_text, *_mark_options).to_html
+        )
+
+        # content_result << ::RedcarpetCompat.new(content_text, *_mark_options).to_html
+
       else
         # FIXME: no
       end

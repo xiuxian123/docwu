@@ -19,6 +19,8 @@ Gem::Specification.new do |s|
   s.add_dependency 'coderay'
   s.add_dependency 'mustache_render'
   s.add_dependency 'thin'
+  s.add_dependency 'nokogiri'
+
 
   # s.add_dependency "rails", "~> 4.0.0"
 

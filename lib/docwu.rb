@@ -8,8 +8,6 @@ require "#{File.dirname(__FILE__)}/docwu/post"
 require "#{File.dirname(__FILE__)}/docwu/category"
 require "#{File.dirname(__FILE__)}/docwu/server"
 
-require 'redcarpet'
-require 'coderay'
 require 'yaml'
 require 'fileutils'
 require 'mustache_render'

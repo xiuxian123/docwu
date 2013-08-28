@@ -1,9 +1,6 @@
----------
-
-layout: htllo world
+---
 title: 'Hello Wolrd'
-
--------
+---
 
 # Hello World
 
@@ -15,4 +12,4 @@ def helloworld
 end
 ```
 
-[World](images/helloworld.jpg)
+![World](/images/helloworld.jpg)
