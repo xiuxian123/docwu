@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require 'redcarpet'
 require 'coderay'
 require "nokogiri"
@@ -10,6 +11,18 @@ module Docwu
       end
     end
 
+    #
+    # usage:
+    #   ::Docwu::Render.generate(
+    #     :content_data => ''
+    #   )
+    # options:
+    #   - content_data
+    #   - content_text
+    #   - dest
+    #   - template
+    #   - content_type
+    #
     def generate(options={})
       content_data = options[:content_data] || {}
       content_text = options[:content_text] || ''
@@ -35,7 +48,10 @@ module Docwu
         # FIXME: no
       end
 
-      content_data['content'] = content_result
+      content_data['page'] ||= {}
+      content_data['page']['content'] = content_result
+
+      # puts "#{content_data}"
 
       # 页面的内容
       ::Docwu::Utils.write_file dest, ::MustacheRender::Mustache.render(template, content_data)

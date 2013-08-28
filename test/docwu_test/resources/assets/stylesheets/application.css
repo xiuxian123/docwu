@@ -1,6 +1,37 @@
-#container {
-  width: 960px;
+body {
+  padding: 0;
+  margin: 0;
+}
+
+a:hover {
+  color: red !important;
+}
+
+a {
+  color: #A68800;
+}
+
+a.button {
+    background-color: #AAB5B5;
+    border-radius: 10px 10px 10px 10px;
+    color: white;
+    display: inline-block;
+    margin: 0 5px 5px 0;
+    padding: 5px 10px;
+    text-decoration: none;
+}
+
+.wrapper {
+  width: 1024px;
   margin: 0 auto;
+}
+
+.clearfix:after {
+    clear: both;
+    content: ".";
+    display: block;
+    height: 0;
+    visibility: hidden;
 }
 
 .code {
@@ -12,3 +43,37 @@
   background: #ccc;
   padding: 5px;
 }
+
+#header {
+  background: none repeat scroll 0 0 #007E8C;
+  padding: 5px;
+}
+
+#header a {
+  color: #fff;
+}
+
+#container {
+
+}
+
+#container .information {
+  text-align: center;
+  padding: 10px;
+  margin: 10px;
+}
+
+#container .information .bar {
+  padding: 5px;
+}
+
+#container .content {
+  padding: 10px;
+}
+
+#footer {
+  font-size: 12px;
+  text-align: center;
+  color: #888;
+}
+

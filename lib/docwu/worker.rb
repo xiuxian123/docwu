@@ -1,4 +1,5 @@
 # -*- encoding : utf-8 -*-
+require 'date'
 module Docwu
   class Worker
 
@@ -33,16 +34,27 @@ module Docwu
     #  output_path
     #
     attr_reader :src_paths, # 源文件地址们
-      :output_path,         # 要输出的路径
-      :folders,             # 项目文件夹们
-      :asset_paths,         # assets路径
-      :layouts,             # layouts路径
-      :data                 # 数据
+    :output_path,         # 要输出的路径
+    :folders,             # 项目文件夹们
+    :asset_paths,         # assets路径
+    :layouts,             # layouts路径
+    :data
 
     def initialize attrs={}
       @output_path         = attrs[:output_path]  || Docwu.config.output_path
-      @data                = attrs[:data]         || Docwu.config.data               || {}
       @src_paths           = attrs[:src_paths]    || Docwu.config.src_paths
+
+      @data = {
+        'worker' => {
+          'copyright' => {
+            'year'    => ::Date.today.year,
+            'content' => 'document world util',
+            'name'    => 'Doc WU'
+          }
+        }
+      }
+
+      ::Docwu::Utils.hash_deep_merge!(@data['worker'], (Docwu.config.data || {}))
 
       # 关于目录
       @folders             = {}
@@ -74,8 +86,6 @@ module Docwu
         end
 
         _folder_path = "#{_path}/doc"
-
-        puts " _folder_path---> #{_folder_path}"
 
         if File.exists?(_folder_path) && File.directory?(_folder_path)
           @folders[_space] = ::Docwu::Folder.new(:path => _folder_path, :worker => self, :dir => (_folder_path.sub(_path, '')), :space => _space)

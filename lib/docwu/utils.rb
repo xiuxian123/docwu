@@ -1,6 +1,42 @@
+# -*- encoding : utf-8 -*-
 module Docwu
   class Utils
     class << self
+      def hash_deep_merge(hash, other_hash)
+        hash.merge(other_hash) do |key, oldval, newval|
+          oldval = oldval.to_hash if oldval.respond_to?(:to_hash)
+          newval = newval.to_hash if newval.respond_to?(:to_hash)
+          oldval.class.to_s == 'Hash' && newval.class.to_s == 'Hash' ? self.hash_deep_merge(oldval, newval) : newval
+        end
+      end
+
+      def hash_deep_merge!(hash, other_hash)
+        hash.replace(self.hash_deep_merge(hash, other_hash))
+      end
+
+      # 将hash中所有非hash的类型，转为hash, 以便前端调用
+      def formated_hashed hash={}
+        _res = {}
+
+        hash.each do |key, value|
+          if value.is_a?(Array)
+            _res[key] = value.map do |_val|
+              {'value' => _val}
+            end
+
+            _res["#{key}_any?"] = value.any?
+            _res["#{key}_count"] = value.size
+
+          elsif value.is_a?(Hash)
+            _res[key] = self.data_hashed(value)
+          else
+            _res[key] = value
+          end
+        end
+
+        _res
+      end
+
       def filename_extless _path=''
         _path.chomp(File.extname(_path))
       end
@@ -51,7 +87,8 @@ module Docwu
           begin
             pre.replace ::CodeRay.scan(text, lang).div.to_s
           rescue Exception => error
-            puts "#{__FILE__} syntax_highlighter error: \ntext => #{text} \nlang => #{lang}\n origin error:#{error}"
+            # TODO: error log
+            # puts "#{__FILE__} syntax_highlighter error: \ntext => #{text} \nlang => #{lang}\n origin error:#{error}"
           end
         end
 
@@ -59,6 +96,7 @@ module Docwu
       end
 
     end
+
   end
 end
 

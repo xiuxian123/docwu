@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # http://tobyho.com/2009/09/16/http-server-in-5-lines-with/
 # https://github.com/rack/rack/blob/master/lib/rack/handler/thin.rb
 # https://github.com/macournoyer/thin/blob/master/lib/thin/server.rb

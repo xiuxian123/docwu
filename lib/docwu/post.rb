@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module Docwu
   class Post
     # 一个文件夹下面可能会有很多文件或文件夹的
@@ -18,9 +19,7 @@ module Docwu
 
       _parse_content = self.parse_content
 
-      @content_data = {}
-
-      self.content_data.merge!(_parse_content[:data])
+      @content_data = self.worker.data.merge('page' => _parse_content[:data])
 
       @content_type = @content_data['content_type'] || 'html'
 
@@ -32,6 +31,8 @@ module Docwu
                           end
 
       # URL ---------------------------------
+      puts "before: dir:#{self.dir} url: #{self.url} dest: #{self.dest} path: #{self.path}"
+
       @space = attrs[:space]
 
       @dir = "#{::Docwu::Utils.filename_extless(attrs[:dir])}.#{_extend_name}"
@@ -45,6 +46,7 @@ module Docwu
       @url << self.dir
 
       @dest = "#{self.worker.output_path}#{self.url}"
+      puts "after: dir:#{self.dir} url: #{self.url} dest: #{self.dest} path: #{self.path}"
       # -------------------------------------
 
     end
@@ -142,7 +144,7 @@ module Docwu
       #   _content_text << _content
       # end
 
-      {:data => _content_data, :text => _content_text}
+      {:data => ::Docwu::Utils.formated_hashed(_content_data), :text => _content_text}
     end
   end
 end

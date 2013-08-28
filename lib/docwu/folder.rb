@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module Docwu
   class Folder
     # 一个文件夹下面可能会有很多文件或文件夹的
@@ -28,7 +29,7 @@ module Docwu
       @folders = []
 
       ::Dir.glob("#{self.path}/*").each do |_path|
-        _dir = _path.sub(self.path, '')
+        _dir = "#{self.dir}#{_path.sub(self.path, '')}"
 
         if File.exists?(_path)
           if File.file?(_path) # 如果一个文件
