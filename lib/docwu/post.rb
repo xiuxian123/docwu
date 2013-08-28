@@ -1,31 +1,52 @@
 module Docwu
   class Post
     # 一个文件夹下面可能会有很多文件或文件夹的
-    attr_reader :parent, :path, :worker, :dir, :content_data,
-      :space, :url, :dest
+    attr_reader :parent,
+      :path,           # 原地址
+      :worker,         # worker对象
+      :dir,            # 
+      :content_data,
+      :space,
+      :url,
+      :dest,
+      :content_type
 
     def initialize attrs={}
       @path   = attrs[:path]
       @parent = attrs[:parent]
       @worker = attrs[:worker]
 
-      # URL ---------------------------------
-      @space = attrs[:space]
-      @dir = attrs[:dir]
-
-      # dest
-      @dest = "#{self.worker.output_path}"
-      if self.space
-        @dest << "/#{self.space}"
-      end
-      @dest << self.dir
-      # -------------------------------------
-
       _parse_content = self.parse_content
 
       @content_data = {}
 
       self.content_data.merge!(_parse_content[:data])
+
+      @content_type = @content_data['content_type'] || 'html'
+
+      _extend_name = case self.content_type
+                          when 'html'
+                            'html'
+                          else
+                            'html'
+                          end
+
+      # URL ---------------------------------
+      @space = attrs[:space]
+
+      @dir = "#{::Docwu::Utils.filename_extless(attrs[:dir])}.#{_extend_name}"
+
+      @url = ''
+
+      if self.space
+        @url << "/#{self.space}"
+      end
+
+      @url << self.dir
+
+      @dest = "#{self.worker.output_path}#{self.url}"
+      # -------------------------------------
+
     end
 
     def layout
@@ -45,10 +66,13 @@ module Docwu
 
       puts " -> generate post: form #{_path}  to #{_dest}"
       puts "             layout: #{self.layout}"
+      puts "             url:    #{self.url}"
+      puts "             dir:    #{self.dir}"
 
       ::Docwu::Render.generate(
         :content_text => _content_text,
         :content_data => self.content_data,
+        :content_type => self.content_type,
         :dest         => _dest,
         :template     => _template
       )

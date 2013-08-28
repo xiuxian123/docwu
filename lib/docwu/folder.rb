@@ -13,12 +13,15 @@ module Docwu
       @space = attrs[:space]
       @dir = attrs[:dir]
 
-      # dest
-      @dest = "#{self.worker.output_path}"
+      @url = ''
+
       if self.space
-        @dest << "/#{self.space}"
+        @url << "/#{self.space}"
       end
-      @dest << self.dir
+
+      @url << self.dir
+
+      @dest = "#{self.worker.output_path}#{self.url}"
       # -------------------------------------
 
       @posts   = []

@@ -12,10 +12,10 @@ module Docwu
       content_result = ''
       dest         = options[:dest]
       template     = options[:template]
+      content_type = options[:content_type]
 
       # 读取标记类型
       marktype = (content_data['marktype'] || 'markdown').to_s
-      content_type = (content_data['content_type'] || 'html').to_s
 
       case marktype
       when 'markdown'
@@ -27,8 +27,6 @@ module Docwu
       end
 
       content_data['content'] = content_result
-
-      puts " --------------------> write to: #{dest}, #{content_result}"
 
       # 页面的内容
       ::Docwu::Utils.write_file dest, ::MustacheRender::Mustache.render(template, content_data)

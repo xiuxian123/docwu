@@ -1,6 +1,9 @@
 module Docwu
   class Utils
     class << self
+      def filename_extless _path=''
+        _path.chomp(File.extname(_path))
+      end
 
       def read_file path
         ::File.read(path)

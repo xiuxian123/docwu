@@ -40,8 +40,9 @@ module Docwu
       :data                 # 数据
 
     def initialize attrs={}
-      @data                = attrs[:data]      || Docwu.config.data               || {}
-      @src_paths           = attrs[:src_paths] || Docwu.config.src_paths
+      @output_path         = attrs[:output_path]  || Docwu.config.output_path
+      @data                = attrs[:data]         || Docwu.config.data               || {}
+      @src_paths           = attrs[:src_paths]    || Docwu.config.src_paths
 
       # 关于目录
       @folders             = {}
@@ -88,8 +89,6 @@ module Docwu
           end
         end
       end
-
-      @output_path         = attrs[:output_path]        || Docwu.config.output_path
 
       # puts self.output_path
       # puts self.folders
