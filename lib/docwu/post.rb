@@ -31,8 +31,6 @@ module Docwu
                           end
 
       # URL ---------------------------------
-      puts "before: dir:#{self.dir} url: #{self.url} dest: #{self.dest} path: #{self.path}"
-
       @space = attrs[:space]
 
       @dir = "#{::Docwu::Utils.filename_extless(attrs[:dir])}.#{_extend_name}"
@@ -46,7 +44,6 @@ module Docwu
       @url << self.dir
 
       @dest = "#{self.worker.output_path}#{self.url}"
-      puts "after: dir:#{self.dir} url: #{self.url} dest: #{self.dest} path: #{self.path}"
       # -------------------------------------
 
     end

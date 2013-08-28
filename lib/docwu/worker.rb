@@ -100,6 +100,8 @@ module Docwu
         end
       end
 
+      # TODO: add 更多的全局数据
+
       # puts self.output_path
       # puts self.folders
       # puts self.layouts

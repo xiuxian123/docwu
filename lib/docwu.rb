@@ -5,7 +5,7 @@ require "#{File.dirname(__FILE__)}/docwu/worker"
 require "#{File.dirname(__FILE__)}/docwu/render"
 require "#{File.dirname(__FILE__)}/docwu/folder"
 require "#{File.dirname(__FILE__)}/docwu/post"
-require "#{File.dirname(__FILE__)}/docwu/category"
+require "#{File.dirname(__FILE__)}/docwu/topic"
 require "#{File.dirname(__FILE__)}/docwu/server"
 
 require 'yaml'

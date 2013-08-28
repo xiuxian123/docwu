@@ -42,6 +42,7 @@ module Docwu
     end
 
     def generate
+      # TODO: index : 需要生成首页！
       self.folders.each do |folder|
         folder.generate
       end
