@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    docwu (0.0.1)
+    docwu (0.0.2)
       coderay
       mustache_render
       nokogiri

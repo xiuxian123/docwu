@@ -7,18 +7,30 @@ This project rocks and uses MIT-LICENSE.
 ## 结构
 
 ```
-workspace
+ - workspace
 
-  - assets:
-    + javascripts:
-    + stylesheets:
-    + images:
-  - sources:
-    - layouts:
-      - default.mustache
-    - pages:
-      - index.mustache
-  - posts:
-    - 
+▾ assets/
+  ▸ files/
+  ▸ images/
+  ▾ javascripts/
+      application.js
+      document_folder.js
+      document_post.js
+  ▾ stylesheets/
+      application.css
+      document_folder.css
+      document_post.css
+▸ doc/
+▾ layouts/
+  ▸ partials/
+    folder.mustache
+    post.mustache
+▾ pages/
+    index.markdown
+  .gitignore
+  config.yml
+  Gemfile
+  Gemfile.lock
+  worker*
 
 ```
