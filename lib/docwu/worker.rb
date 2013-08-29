@@ -27,22 +27,11 @@ module Docwu
     # - layouts:
     #   - application.mustache
     #
-    #  data:
-    #  src_paths
-    #  asset_paths
-    #  layout_paths
-    #  output_path
-    #
-    attr_reader :src_paths, # 源文件地址们
-    :output_path,         # 要输出的路径
-    :folders,             # 项目文件夹们
-    :asset_paths,         # assets路径
-    :layouts,             # layouts路径
-    :data
 
-    def initialize attrs={}
-      @output_path         = attrs[:output_path]  || Docwu.config.output_path
-      @src_paths           = attrs[:src_paths]    || Docwu.config.src_paths
+    attr_reader :layouts, :data, :deploy_path, :folders
+
+    def initialize
+      @deploy_path = ::Docwu.config.deploy_path   # 部署路径
 
       @data = {
         'worker' => {
@@ -54,78 +43,51 @@ module Docwu
         }
       }
 
-      ::Docwu::Utils.hash_deep_merge!(@data['worker'], (Docwu.config.data || {}))
+      ::Docwu::Utils.hash_deep_merge!(@data['worker'], ::Docwu.config.worker)
 
       # 关于目录
       @folders             = {}
       @layouts             = {}
 
-      # 静态文件目录 --------------------------------------------------------
-      @asset_paths = []
+      # 布局模板
+      ::Docwu.config.routes['layouts'].each do |name, path|
+        _path = "#{plain_path("/layouts/#{path}")}"
 
-      (Docwu.config.asset_paths || []).each do |_path|
-        if File.exists?(_path) && File.directory?(_path)
-          @asset_paths << _path
+        if File.exists?(_path) && File.file?(_path)
+          @layouts[name] = File.read(_path)
         end
       end
 
-      layout_paths = attrs[:layout_paths] || Docwu.config.layout_paths || []
+      # 计算出当前所有的 folders                源,   目标
+      ::Docwu.config.routes['folders'].each do |_src, _path|
+        _folder_src = "#{plain_path("/#{_src}")}"
 
-      # 计算出当前所有的asset_paths
-      @src_paths.each do |_space, _path|
-        _asset_path = "#{_path}/assets"
-
-        if File.exists?(_asset_path) && File.directory?(_asset_path)
-          @asset_paths << _asset_path
-        end
-
-        _layout_path = "#{_path}/layouts"
-
-        if File.exists?(_layout_path) && File.directory?(_layout_path)
-          layout_paths << _layout_path
-        end
-
-        _folder_path = "#{_path}/doc"
-
-        if File.exists?(_folder_path) && File.directory?(_folder_path)
-          @folders[_space] = ::Docwu::Folder.new(:path => _folder_path, :worker => self, :dir => (_folder_path.sub(_path, '')), :space => _space)
+        if File.exists?(_folder_src) && File.directory?(_folder_src)
+          @folders[_src] = ::Docwu::Folder.new(:src => _folder_src, :worker => self, :path => _path)
         end
       end
 
-      layout_paths.each do |_path|
-        Dir.glob("#{_path}/**/*").each do |_dir|
-          if File.exists?(_dir) && File.file?(_dir)
-            @layouts[_dir.sub("#{_path}/", '')] = _dir
-          end
-        end
-      end
-
+      # puts " worker layouts: -->#{self.layouts}"
+      # puts "-->#{self.folders}"
       # TODO: add 更多的全局数据
-
-      # puts self.output_path
-      # puts self.folders
-      # puts self.layouts
-      # puts self.asset_paths
     end
 
     # 输出: 
     #   TODO: 先生成临时目录， 然后 -> deploy
     def generate
       # 删除要输出的路径
-      FileUtils.rm_rf(self.output_path)
+      FileUtils.rm_rf(self.deploy_path)
 
       # 复制 assets 文件进去
-      self.asset_paths.each do |_path|
-        FileUtils.cp_r("#{_path}", "#{self.output_path}/")
-      end
+      FileUtils.cp_r("#{plain_path('/assets')}", "#{self.deploy_path}/")
 
       self.folders.each do |space, folder|
         folder.generate
       end
-
     end
 
-    private
-
+    def plain_path(path)
+      "#{::Docwu.config.workspace}#{path}"
+    end
   end
 end

@@ -18,7 +18,6 @@ module Docwu
     #   )
     # options:
     #   - content_data
-    #   - content_text
     #   - dest
     #   - template
     #   - content_type
@@ -52,6 +51,7 @@ module Docwu
       content_data['page']['content'] = content_result
 
       # puts "#{content_data}"
+      # puts "#{template}"
 
       # 页面的内容
       ::Docwu::Utils.write_file dest, ::MustacheRender::Mustache.render(template, content_data)

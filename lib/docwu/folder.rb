@@ -2,40 +2,31 @@
 module Docwu
   class Folder
     # 一个文件夹下面可能会有很多文件或文件夹的
-    attr_reader :posts, :folders, :parent, :path, :worker, :dir,
-      :space, :url, :dest
+    attr_reader :posts, :folders, :parent, :worker,
+      :dest, :path, :src, :url
 
     def initialize attrs={}
-      @path = attrs[:path]
       @worker = attrs[:worker]
       @parent  = attrs[:parent]
 
-      # URL ---------------------------------
-      @space = attrs[:space]
-      @dir = attrs[:dir]
+      @src  = attrs[:src]
+      @path = attrs[:path]
+      @url  = "/#{@path}"
 
-      @url = ''
-
-      if self.space
-        @url << "/#{self.space}"
-      end
-
-      @url << self.dir
-
-      @dest = "#{self.worker.output_path}#{self.url}"
+      @dest = "#{self.worker.deploy_path}/#{self.path}"
       # -------------------------------------
 
       @posts   = []
       @folders = []
 
-      ::Dir.glob("#{self.path}/*").each do |_path|
-        _dir = "#{self.dir}#{_path.sub(self.path, '')}"
+      ::Dir.glob("#{self.src}/*").each do |_src|
+        _name = "#{_src.sub("#{self.src}/", '')}"
 
-        if File.exists?(_path)
-          if File.file?(_path) # 如果一个文件
-            @posts   << ::Docwu::Post.new(:path => _path, :parent => self, :worker => self.worker, :dir => _dir, :space => self.space)
-          elsif File.directory?(_path) # 如果是一个文件夹
-            @folders << self.class.new(:path => _path, :parent => self, :worker => self.worker, :dir => _dir, :space => self.space)
+        if File.exists?(_src)
+          if File.file?(_src) # 如果一个文件
+            @posts << ::Docwu::Post.new(:src => _src, :parent => self, :worker => self.worker, :path => "#{self.path}/#{_name}")
+          elsif File.directory?(_src) # 如果是一个文件夹
+            @folders << self.class.new(:src => _src, :parent => self, :worker => self.worker, :path => "#{self.path}/#{_name}")
           end
         end
       end

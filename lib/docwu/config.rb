@@ -12,34 +12,31 @@ module Docwu
     end
   end
 
-  #
-  #  src_paths
-  #  asset_paths
-  #  layout_paths
-  #  output_path
-  #
   class Config
-    attr_reader :src_paths, :asset_paths, :layout_paths, :output_path, :data
+    # attr_reader :src_paths, :asset_paths, :layout_paths, :output_path, :data
 
-    def data= a
-      @data ||= a
+    attr_reader :routes, :server, :worker, :workspace
+
+    def routes= a
+      @routes ||= a
     end
 
-    def src_paths= a
-      @src_paths ||= a
+    def server= a
+      @server ||= a
     end
 
-    def asset_paths= a
-      @asset_paths ||= a
+    def worker= a
+      @worker ||= a
     end
 
-    def layout_paths= a
-      @layout_paths ||= a
+    def workspace= a
+      @workspace ||= a
     end
 
-    def output_path= a
-      @output_path ||= a
+    def deploy_path
+      @deploy_path ||= ("#{self.workspace}/_deploy")
     end
+
   end
 end
 

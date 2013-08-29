@@ -14,7 +14,7 @@ module Docwu
     require 'rack'
 
     def self.process(options={})
-      options['destination'] ||= ::Docwu.config.output_path
+      options['destination'] ||= ::Docwu.config.deploy_path
       destination = options['destination']
       FileUtils.mkdir_p(destination)
 
