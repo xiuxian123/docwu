@@ -8,6 +8,7 @@ require "#{File.dirname(__FILE__)}/docwu/folder"
 require "#{File.dirname(__FILE__)}/docwu/post"
 require "#{File.dirname(__FILE__)}/docwu/server"
 
+require 'pp'
 require 'yaml'
 require 'fileutils'
 require 'mustache_render'
@@ -36,6 +37,10 @@ module Docwu
       config.routes      = (_config['routes'] || {}).freeze
       config.worker      = (_config['worker'] || {}).freeze
       config.workspace   = "#{workspace}".freeze
+    end
+
+    ::MustacheRender.configure do |config|
+      config.file_template_root_path = ::Docwu.config.layouts_path
     end
 
     Docwu::Worker.new.generate

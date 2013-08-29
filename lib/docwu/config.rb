@@ -33,6 +33,10 @@ module Docwu
       @workspace ||= a
     end
 
+    def layouts_path
+      @layouts_path ||= ("#{self.workspace}/layouts")
+    end
+
     def deploy_path
       @deploy_path ||= ("#{self.workspace}/_deploy")
     end

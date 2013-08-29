@@ -9,32 +9,53 @@ module Docwu
       :path,           # 访问地址
       :src,            # 原文件地址
       :url,            # URL 地址
-      :content_type
+      :content_type,
+      :name,
+      :file_name       # 文件名
+
+    def parents
+      if self.parent.nil?
+        []
+      else
+        self.parent.parents.dup << self.parent
+      end
+    end
+
+    def parent_datas
+      self.parents.map(&:to_data)
+    end
 
     def initialize attrs={}
       @parent = attrs[:parent]
+
       @worker = attrs[:worker]
 
       @src = attrs[:src]
 
       _parse_content = self.parse_content
 
-      @content_data = self.worker.data.merge('page' => _parse_content[:data])
+      # 将合并来自worker的数据
+      @content_data = ::Docwu::Utils.hash_deep_merge(self.worker.data, 'page' => _parse_content[:data])  # 来自页面的数据
 
       @content_type = @content_data['content_type'] || 'html'
 
       _extend_name = case self.content_type
-                          when 'html'
-                            'html'
-                          else
-                            'html'
-                          end
+                     when 'html'
+                       'html'
+                     else
+                       'html'
+                     end
 
       # URL ---------------------------------
-      @path = "#{::Docwu::Utils.filename_extless(attrs[:path])}.#{_extend_name}"
-      @url  = "/#{@path}"
+      _filename_extless = ::Docwu::Utils.filename_extless(attrs[:path])
 
+      @path = "#{_filename_extless}.#{_extend_name}"
+      @url  = "/#{@path}"
       @dest = "#{self.worker.deploy_path}/#{self.path}"
+
+      @file_name = ::Docwu::Utils.filename(_filename_extless)
+
+      @name = self.file_name
 
       # puts "post to: -----------------> desc: #{self.dest}"
       # puts "                            src:  #{self.src}"
@@ -44,19 +65,39 @@ module Docwu
     end
 
     def template
-      self.worker.layouts[self.layout] || self.worker.layouts['default'] || self.worker.layouts['application']
+      self.worker.layouts[self.layout] || self.worker.layouts['post'] || self.worker.layouts['application']
+    end
+
+    # 是否是首页？
+    def index?
+      self.file_name == 'index'
     end
 
     def layout
       self.page_data['layout']
     end
 
+    def to_data
+      {
+        'name'  => self.name,
+        'url'   => self.url,
+        'title' => self.title
+      }
+    end
+
+    # 页面数据
     def page_data
       self.content_data['page'] || {}
     end
 
+    def title
+      self.page_data['title'] || self.url
+    end
+
     # 渲染
     def generate
+      _prepare_data
+
       _parse_content = self.parse_content
 
       _content_text = _parse_content[:text]
@@ -64,10 +105,10 @@ module Docwu
       _path = self.path
       _dest = self.dest
 
-      puts " -> generate post: form #{_path}  to #{_dest}"
-      puts "             layout: #{self.layout}"
-      puts "             url:    #{self.url}"
-      puts "             content_data:    #{self.content_data}"
+      # puts " -> generate post: form #{_path}  to #{_dest}"
+      # puts "             layout: #{self.layout}"
+      # puts "             url:    #{self.url}"
+      # puts "             content_data:    #{self.content_data}"
 
       ::Docwu::Render.generate(
         :content_text => _content_text,
@@ -85,7 +126,7 @@ module Docwu
     def post?
       true
     end
- 
+
     # 解析正文
     def parse_content
       _content = ::File.read(self.src)
@@ -127,7 +168,21 @@ module Docwu
         _content_text = _content
       end
 
-      {:data => ::Docwu::Utils.formated_hashed(_content_data), :text => _content_text}
+      {:data => _content_data, :text => _content_text}
+    end
+
+    private
+
+    def _prepare_data
+      self.content_data['reader'] ||= {}
+
+      # 合并, datas
+      self.content_data['reader'].merge!(
+        'folders' => self.parent_datas,
+        'global'  => {
+          'folders' => self.worker.folders_data
+        }
+      )
     end
   end
 end

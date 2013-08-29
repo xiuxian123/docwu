@@ -46,12 +46,12 @@ module Docwu
       ::Docwu::Utils.hash_deep_merge!(@data['worker'], ::Docwu.config.worker)
 
       # 关于目录
-      @folders             = {}
+      @folders             = []
       @layouts             = {}
 
       # 布局模板
       ::Docwu.config.routes['layouts'].each do |name, path|
-        _path = "#{plain_path("/layouts/#{path}")}"
+        _path = "#{::Docwu.config.layouts_path}/#{path}"
 
         if File.exists?(_path) && File.file?(_path)
           @layouts[name] = File.read(_path)
@@ -63,13 +63,14 @@ module Docwu
         _folder_src = "#{plain_path("/#{_src}")}"
 
         if File.exists?(_folder_src) && File.directory?(_folder_src)
-          @folders[_src] = ::Docwu::Folder.new(:src => _folder_src, :worker => self, :path => _path)
+          @folders << ::Docwu::Folder.new(:src => _folder_src, :worker => self, :path => _path)
         end
       end
 
-      # puts " worker layouts: -->#{self.layouts}"
-      # puts "-->#{self.folders}"
       # TODO: add 更多的全局数据
+
+      self.data['page'] ||= {}
+
     end
 
     # 输出: 
@@ -81,7 +82,7 @@ module Docwu
       # 复制 assets 文件进去
       FileUtils.cp_r("#{plain_path('/assets')}", "#{self.deploy_path}/")
 
-      self.folders.each do |space, folder|
+      self.folders.each do |folder|
         folder.generate
       end
     end
@@ -89,5 +90,10 @@ module Docwu
     def plain_path(path)
       "#{::Docwu.config.workspace}#{path}"
     end
+
+    def folders_data
+      self.folders.map(&:to_data)
+    end
+
   end
 end

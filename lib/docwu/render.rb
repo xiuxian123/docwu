@@ -18,9 +18,9 @@ module Docwu
     #   )
     # options:
     #   - content_data
+    #   - content_text
     #   - dest
     #   - template
-    #   - content_type
     #
     def generate(options={})
       content_data = options[:content_data] || {}
@@ -28,7 +28,6 @@ module Docwu
       content_result = ''
       dest         = options[:dest]
       template     = options[:template]
-      content_type = options[:content_type]
 
       # 读取标记类型
       marktype = (content_data['marktype'] || 'markdown').to_s
@@ -40,9 +39,6 @@ module Docwu
         content_result << ::Docwu::Utils.syntax_highlighter(
           ::RedcarpetCompat.new(content_text, *_mark_options).to_html
         )
-
-        # content_result << ::RedcarpetCompat.new(content_text, *_mark_options).to_html
-
       else
         # FIXME: no
       end
@@ -50,7 +46,9 @@ module Docwu
       content_data['page'] ||= {}
       content_data['page']['content'] = content_result
 
-      # puts "#{content_data}"
+      ::Docwu::Utils.formated_hashed!(content_data)
+
+      # pp content_data
       # puts "#{template}"
 
       # 页面的内容

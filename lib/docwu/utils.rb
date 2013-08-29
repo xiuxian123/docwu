@@ -14,6 +14,10 @@ module Docwu
         hash.replace(self.hash_deep_merge(hash, other_hash))
       end
 
+      def formated_hashed! hash={}
+        hash.replace(self.formated_hashed(hash))
+      end
+
       # 将hash中所有非hash的类型，转为hash, 以便前端调用
       def formated_hashed hash={}
         _res = {}
@@ -21,20 +25,29 @@ module Docwu
         hash.each do |key, value|
           if value.is_a?(Array)
             _res[key] = value.map do |_val|
-              {'value' => _val}
+              if _val.is_a?(Hash)
+                self.formated_hashed(_val)
+              else
+                {'value' => _val}
+              end
             end
 
             _res["#{key}_any?"] = value.any?
             _res["#{key}_count"] = value.size
 
           elsif value.is_a?(Hash)
-            _res[key] = self.data_hashed(value)
+            _res[key] = self.formated_hashed(value)
           else
             _res[key] = value
           end
         end
 
         _res
+      end
+
+      # 获取文件名
+      def filename path=''
+        path.split('/').last
       end
 
       def filename_extless _path=''
