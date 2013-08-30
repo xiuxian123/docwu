@@ -2,5 +2,5 @@
 log/*.log
 pkg/
 
+/.rvmrc
 /tags
-/test/docwu_test/resources/output

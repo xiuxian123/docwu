@@ -13,14 +13,58 @@ require 'pp'
 require 'yaml'
 require 'fileutils'
 require 'mustache_render'
+require 'logger'
 
 module Docwu
 
   # 程序开始
   def self.start(workspace)
+    _start_time = Time.now
+
     args = ARGV
 
-    _config_file = "#{workspace}/config.yml"
+    _command = args.shift
+
+    _useful_cmds = ['g', 'generate', 's', 'server', '-h', '--help']
+
+    unless _useful_cmds.include?(_command)
+      raise "command #{_command} is not available, not in (#{_useful_cmds.join('|')})"
+    end
+
+    _default_params = {
+      '-p'        => [5656],
+      '-a'        => ['0.0.0.0'],
+      '-c'        => ["#{workspace}/config.yml"],
+      'DOCWU_ENV' => ['development'],
+      '-d'        => [(args.delete('-d') == '-d')]
+    }
+
+    if ['--help', '-h'].include?(_command)
+      puts "docwu:"
+
+      _default_params.each do |_cmd, _cfg|
+        puts "    #{_cmd}, #{_cfg[1]} (default: #{_cfg[0]})"
+      end
+
+      exit
+    end
+
+    # 获取参数
+    params = Hash[args.each_slice(2).to_a]
+
+    _default_params.each do |_k, _v|
+      params[_k] = params[_k] || _v.first
+    end
+
+    params['-p'] = params['-p'].to_i
+
+    # 需要生成
+    _need_generate = ['g', 'generate', 's', 'server'].include?(_command)
+
+    # 需要开启server
+    _need_server = ['s', 'server'].include?(_command)
+
+    _config_file = params['-c']
 
     _config = {}
 
@@ -30,11 +74,17 @@ module Docwu
       if _yml.is_a?(Hash)
         _config.merge!(_yml['docwu'] || {})
       end
+    else
+      raise "#{_config_file} not exists!"
     end
+
+    _logger = ::Logger.new(STDOUT)
+    _logger.level = ::Logger::INFO
 
     # docwu 的配置
     ::Docwu.configure do |config|
-      config.server      = (_config['server'] || {}).freeze
+      config.logger      = _logger
+      config.params      = params.freeze
       config.routes      = (_config['routes'] || {}).freeze
       config.worker      = (_config['worker'] || {}).freeze
       config.workspace   = "#{workspace}".freeze
@@ -42,10 +92,21 @@ module Docwu
 
     ::MustacheRender.configure do |config|
       config.file_template_root_path = ::Docwu.config.layouts_path
+      config.logger                  = ::Docwu.config.logger
     end
 
-    Docwu::Worker.new.generate
-    Docwu::Server.process
+    if _need_generate
+      ::Docwu::Worker.new.generate 
+
+      _logger.info("generate: success, #{Time.now - _start_time}")
+    end
+
+    if _need_server
+      ::Docwu::Server.process(
+        :Port => ::Docwu.config.params['-p'],
+        :Host => ::Docwu.config.params['-a']
+      )
+    end
   end
 
 end

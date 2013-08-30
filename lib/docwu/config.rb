@@ -15,14 +15,18 @@ module Docwu
   class Config
     # attr_reader :src_paths, :asset_paths, :layout_paths, :output_path, :data
 
-    attr_reader :routes, :server, :worker, :workspace
+    attr_reader :routes, :params, :worker, :workspace, :docwu_env, :logger
+
+    def logger= a
+      @logger ||= (a || ::Logger.new(STDOUT))
+    end
 
     def routes= a
       @routes ||= a
     end
 
-    def server= a
-      @server ||= a
+    def params= a={}
+      @params ||= a
     end
 
     def worker= a
@@ -31,6 +35,10 @@ module Docwu
 
     def workspace= a
       @workspace ||= a
+    end
+
+    def docwu_env= a
+      @docwu_env ||= 'development'
     end
 
     def topics_path

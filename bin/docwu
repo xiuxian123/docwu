@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 
-require 'docwu'
+# require 'docwu'
+require "/home/happy/workspace/myself/space/flycat/engines/docwu/lib/docwu"
 
-# Thin::Runner.new(ARGV).run!
-
-Docwu.start(File.expand_path('..', __FILE__))
+Docwu.start('.')

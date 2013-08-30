@@ -11,21 +11,24 @@ module Docwu
 # 
 #     Rack::Handler::Thin.run(staticMe, :port => 8080
 
+    require 'thin'
     require 'rack'
 
-    def self.process(options={})
+    def self.process(options={}, &block)
       options['destination'] ||= ::Docwu.config.deploy_path
       destination = options['destination']
       FileUtils.mkdir_p(destination)
-
-      options['port'] ||= 5656
-      options['host'] ||= '0.0.0.0' 
 
       staticMe = Rack::Builder.new do
         run Rack::Directory.new(destination)
       end
 
-      Rack::Handler::Thin.run(staticMe, :Port => options['port'], :Host => options['host'])
+      pp options
+
+      ::Thin::Server.start(options.delete(:Host), options.delete(:Port), staticMe, options, &block)
+
+      # Rack::Handler::Thin.run(staticMe, options)
+
       # Rack::Handler::WEBrick.run(staticMe, :Port => options['port'], :Host => options['host'])
       # Rack::Handler::Mongrel.run(staticMe, :Port => options['port'], :Host => options['host'])
     end
