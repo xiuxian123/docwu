@@ -1,6 +1,6 @@
 # doc wu 
 
-This project rocks and uses MIT-LICENSE.
+This project rocks and uses MIT-LICENSE. Docwu mains Documents Work Up!
 
 ## A markdown doc generations
 

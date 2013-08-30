@@ -33,6 +33,10 @@ module Docwu
       @workspace ||= a
     end
 
+    def topics_path
+      @topics_path ||= ("#{self.workspace}/topics")
+    end
+
     def layouts_path
       @layouts_path ||= ("#{self.workspace}/layouts")
     end

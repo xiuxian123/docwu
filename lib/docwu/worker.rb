@@ -28,7 +28,7 @@ module Docwu
     #   - application.mustache
     #
 
-    attr_reader :layouts, :data, :deploy_path, :folders
+    attr_reader :layouts, :data, :deploy_path, :folders, :topics
 
     def initialize
       @deploy_path = ::Docwu.config.deploy_path   # 部署路径
@@ -45,9 +45,14 @@ module Docwu
 
       ::Docwu::Utils.hash_deep_merge!(@data['worker'], ::Docwu.config.worker)
 
+      self.data['page'] ||= {}
+
+      self.data['reader'] ||= {}
+
       # 关于目录
       @folders             = []
       @layouts             = {}
+      @topics              = []
 
       # 布局模板
       ::Docwu.config.routes['layouts'].each do |name, path|
@@ -55,6 +60,15 @@ module Docwu
 
         if File.exists?(_path) && File.file?(_path)
           @layouts[name] = File.read(_path)
+        end
+      end
+
+      #                                      原文件， 目标路径
+      ::Docwu.config.routes['topics'].each do |src, path|
+        _src_path = "#{::Docwu.config.topics_path}/#{src}"
+
+        if File.exists?(_src_path) && File.file?(_src_path)
+          @topics << ::Docwu::Topic.new(:src => _src_path, :path => path, :worker => self)
         end
       end
 
@@ -69,7 +83,11 @@ module Docwu
 
       # TODO: add 更多的全局数据
 
-      self.data['page'] ||= {}
+      self.data['reader'].merge!(
+        'global'  => {
+          'folders' => self.folders_data
+        }
+      )
 
     end
 
@@ -84,6 +102,10 @@ module Docwu
 
       self.folders.each do |folder|
         folder.generate
+      end
+
+      self.topics.each do |topic|
+        topic.generate
       end
     end
 

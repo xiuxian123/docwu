@@ -30,4 +30,3 @@ PLATFORMS
 
 DEPENDENCIES
   docwu!
-  mustache_render

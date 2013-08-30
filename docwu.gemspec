@@ -10,8 +10,9 @@ Gem::Specification.new do |s|
   s.authors     = ["happy"]
   s.email       = ["andywang7259@gmail.com"]
   s.homepage    = "http://github.com/xiuxian123/docwu"
-  s.summary     = "Summary of Docfive."
-  s.description = "Description of Docfive."
+  s.summary     = "Summary of Doc Work UP."
+  s.description = "Description of Doc Work UP."
+  s.executables = %w( docwu )
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
 
@@ -21,7 +22,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'thin'
   # s.add_dependency 'mongrel'
   s.add_dependency 'nokogiri'
-
 
   # s.add_dependency "rails", "~> 4.0.0"
 

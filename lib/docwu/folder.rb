@@ -3,7 +3,7 @@ module Docwu
   class Folder
     # 一个文件夹下面可能会有很多文件或文件夹的
     attr_reader :posts, :folders, :parent, :worker, :name,
-      :dest, :path, :src, :url, :index_dest,
+      :dest, :path, :src, :url, :index_post, :index_dest,
       :parents, :content_data
 
     def initialize attrs={}
@@ -34,12 +34,21 @@ module Docwu
 
         if File.exists?(_src)
           if File.file?(_src) # 如果一个文件
-            @posts << ::Docwu::Post.new(:src => _src, :parent => self, :worker => self.worker, :path => "#{self.path}/#{_name}")
+            _post = ::Docwu::Post.new(:src => _src, :parent => self, :worker => self.worker, :path => "#{self.path}/#{_name}")
+
+            if _post.index?
+              @index_post = _post
+            else
+              @posts << _post
+            end
           elsif File.directory?(_src) # 如果是一个文件夹
             @folders << self.class.new(:src => _src, :parent => self, :worker => self.worker, :path => "#{self.path}/#{_name}")
           end
         end
       end
+
+      self.posts.sort! { |a, b| b.ranking <=> a.ranking }
+      self.posts.sort! { |a, b| b.datetime <=> a.datetime }
 
       #  TODO: 是否从index文件中读取data呢?
     end
@@ -59,19 +68,29 @@ module Docwu
       }
     end
 
+    def index_page_data
+      if self.has_index?
+        self.index_post.page_data
+      else
+        {}
+      end
+    end
+
     def generate
       _prepare_data
 
       # TODO: index : 需要生成首页！
-      unless self.has_index? # 表示没有现成的首页文件，则会输出特定文件夹的首页来
-        _template = self.worker.layouts['folder']
+      _template = if self.has_index?
+                    self.worker.layouts[self.index_post.layout]
+                  end
 
-        ::Docwu::Render.generate(
-          :content_data => self.content_data,
-          :dest         => self.index_dest,
-          :template     => _template
-        )
-      end
+      _template ||= self.worker.layouts['folder']
+
+      ::Docwu::Render.generate(
+        :content_data => self.content_data,
+        :dest         => self.index_dest,
+        :template     => _template
+      )
 
       self.folders.each do |folder|
         folder.generate
@@ -84,11 +103,7 @@ module Docwu
 
     # 有首页文件了
     def has_index?
-      self.posts.each do |post|
-        return true if post.index?
-      end
-
-      false
+      !!(self.index_post)
     end
 
     def folder?
@@ -105,10 +120,7 @@ module Docwu
       @content_data = ::Docwu::Utils.hash_deep_merge(self.worker.data, {
         'reader'   => {
           'folder' => self.to_data,
-          'folders' => self.parent_datas,
-          'global'  => {
-            'folders' => self.worker.folders_data
-          }
+          'folders' => self.parent_datas
         }
       })
 

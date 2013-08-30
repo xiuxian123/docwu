@@ -108,6 +108,79 @@ module Docwu
         doc.css('body').inner_html.to_s
       end
 
+      # 解析 mark
+      def parse_marked_content src_content=''
+        _content_text = ''
+        _content_data = {}
+
+        # 读取页面的配置
+        content_lines = src_content.split(/\n/)  # 根据换行分割
+
+        _data_lines = []
+        _text_lines = []
+
+        _data_num_a = -1
+        _data_num_b = -1
+
+        content_lines.each_with_index do |line, index|
+          if line =~ /--+/
+            if _data_num_a == -1
+              _data_num_a = index
+            elsif _data_num_b == -1
+              _data_num_b = index
+            else
+              break
+            end
+          end
+        end
+
+        if _data_num_a > -1 && _data_num_b > -1
+          # 说明有配置信息
+          _yaml = ::YAML.load(content_lines[_data_num_a + 1, _data_num_b -1].join("\n"))
+
+          if _yaml.is_a?(Hash)
+            _content_data.merge!(_yaml)
+          end
+
+          _content_text = content_lines[_data_num_b + 1, content_lines.size].join("\n")
+        else # 无页面配置信息
+          _content_text = src_content
+        end
+
+        {:data => _content_data, :text => _content_text}
+
+      end
+
+      # 获取一个html代码的目录结果
+      def html_catalogable html=''
+        doc = ::Nokogiri::HTML(html)
+
+        paths = doc.xpath('//h1|//h2|//h3|//h4|//h5|//h6')
+
+        index = 1
+
+        catalogs = paths.map do |path|
+          _name = path.name
+          _text = path.text
+
+          _anchor = "markup-#{_name}-#{index}"
+
+          index += 1
+
+          path.replace("<#{_name}><a name='#{_anchor}'></a>#{_text}</#{_name}>")
+
+          {
+            'text'   => _text,
+            'name'   => _name,
+            'anchor' => _anchor
+          }
+        end
+
+        {
+          'catalogs' => catalogs,
+          'html'     => doc.css('body').inner_html.to_s
+        }
+      end
     end
 
   end

@@ -11,7 +11,9 @@ module Docwu
       :url,            # URL 地址
       :content_type,
       :name,
-      :file_name       # 文件名
+      :file_name,      # 文件名
+      :datetime,
+      :ranking
 
     def parents
       if self.parent.nil?
@@ -56,6 +58,8 @@ module Docwu
       @file_name = ::Docwu::Utils.filename(_filename_extless)
 
       @name = self.file_name
+      @datetime = self.page_data['datetime']  # 创建时间
+      @ranking  = self.page_data['ranking'].to_i  # 创建时间
 
       # puts "post to: -----------------> desc: #{self.dest}"
       # puts "                            src:  #{self.src}"
@@ -77,17 +81,27 @@ module Docwu
       self.page_data['layout']
     end
 
+    def outline
+      @outline ||= self.page_data['outline'].to_s
+    end
+
     def to_data
+      introduction_size = 32
+
+      introduction = "#{self.outline[0, introduction_size]}#{' ...' if self.outline.size > introduction_size}"
+
       {
         'name'  => self.name,
         'url'   => self.url,
-        'title' => self.title
+        'title' => self.title,
+        'outline' => self.outline,
+        'introduction' => introduction
       }
     end
 
     # 页面数据
     def page_data
-      self.content_data['page'] || {}
+      self.content_data['page'] ||= {}
     end
 
     def title
@@ -105,15 +119,9 @@ module Docwu
       _path = self.path
       _dest = self.dest
 
-      # puts " -> generate post: form #{_path}  to #{_dest}"
-      # puts "             layout: #{self.layout}"
-      # puts "             url:    #{self.url}"
-      # puts "             content_data:    #{self.content_data}"
-
       ::Docwu::Render.generate(
         :content_text => _content_text,
         :content_data => self.content_data,
-        :content_type => self.content_type,
         :dest         => _dest,
         :template     => self.template
       )
@@ -131,44 +139,11 @@ module Docwu
     def parse_content
       _content = ::File.read(self.src)
 
-      _content_text = ''
-      _content_data = {}
+      ::Docwu::Utils.parse_marked_content(_content)
+    end
 
-      # 读取页面的配置
-      content_lines = _content.split(/\n/)  # 根据换行分割
-
-      _data_lines = []
-      _text_lines = []
-
-      _data_num_a = -1
-      _data_num_b = -1
-
-      content_lines.each_with_index do |line, index|
-        if line =~ /--+/
-          if _data_num_a == -1
-            _data_num_a = index
-          elsif _data_num_b == -1
-            _data_num_b = index
-          else
-            break
-          end
-        end
-      end
-
-      if _data_num_a > -1 && _data_num_b > -1
-        # 说明有配置信息
-        _yaml = ::YAML.load(content_lines[_data_num_a + 1, _data_num_b -1].join("\n"))
-
-        if _yaml.is_a?(Hash)
-          _content_data.merge!(_yaml)
-        end
-
-        _content_text = content_lines[_data_num_b + 1, content_lines.size].join("\n")
-      else # 无页面配置信息
-        _content_text = _content
-      end
-
-      {:data => _content_data, :text => _content_text}
+    def has_folder?
+      self.parent.is_a?(::Docwu::Folder)
     end
 
     private
@@ -176,13 +151,17 @@ module Docwu
     def _prepare_data
       self.content_data['reader'] ||= {}
 
-      # 合并, datas
-      self.content_data['reader'].merge!(
+      _data = {
         'folders' => self.parent_datas,
-        'global'  => {
-          'folders' => self.worker.folders_data
-        }
-      )
+        'post' => self.to_data
+      }
+
+      if self.has_folder?
+        (_data['folder'] ||= {}).merge!(self.parent.to_data)
+      end
+
+      # 合并, datas
+      self.content_data['reader'].merge!(_data)
     end
   end
 end

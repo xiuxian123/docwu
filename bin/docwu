@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+require 'docwu'
+
+# Thin::Runner.new(ARGV).run!
+
+Docwu.start(File.expand_path('..', __FILE__))
