@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 
-# require 'docwu'
-require "/home/happy/workspace/myself/space/flycat/engines/docwu/lib/docwu"
+require 'docwu'
 
 Docwu.start('.')
