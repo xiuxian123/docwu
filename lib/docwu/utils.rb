@@ -87,6 +87,13 @@ module Docwu
           end
 
           # debugger
+          # begin
+          #   if pre_code=pre.css('code')
+          #     lang = pre_code.attr('class').to_s
+          #   end
+          # rescue
+          # end
+
           if pre_code=pre.css('code')
             lang = pre_code.attr('class').to_s
           end
