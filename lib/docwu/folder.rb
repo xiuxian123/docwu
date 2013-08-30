@@ -59,12 +59,18 @@ module Docwu
 
     # 转为数据
     def to_data
+      posts_count = self.posts.size
+      posts_limit = 10
+      limit_posts_data = self.posts[0..posts_limit].map(&:to_data)
+
       {
-        'name' => self.name,
-        'url'  => self.url,
-        'title' => self.name,
-        'folders' => self.folders.map(&:to_data),
-        'posts'   => self.posts.map(&:to_data)
+        'name'              => self.name,
+        'url'               => self.url,
+        'title'             => self.name,
+        'folders'           => self.folders.map(&:to_data),
+        'posts'             => self.posts.map(&:to_data),
+        'limit_posts'       => limit_posts_data,
+        'limit_posts_more?' => (posts_count > posts_limit)
       }
     end
 
