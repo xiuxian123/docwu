@@ -1,0 +1,8 @@
+.bundle/
+log/*.log
+pkg/
+
+/_deploy
+
+/.rvmrc
+/tags
