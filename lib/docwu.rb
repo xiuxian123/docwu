@@ -25,23 +25,52 @@ module Docwu
 
     _command = args.shift
 
-    _useful_cmds = ['g', 'generate', 's', 'server', '-h', '--help']
+    _useful_cmds = ['g', 'generate', 's', 'server', '-h', '--help', 'new']
 
     unless _useful_cmds.include?(_command)
-      raise "command #{_command} is not available, not in (#{_useful_cmds.join('|')})"
+      puts "command #{_command} is not available, not in (#{_useful_cmds.join('|')})"
+      exit
+    end
+
+
+    if ['new'].include?(_command)
+      _project_name = args.shift
+
+      if _project_name.nil?
+        puts 'error: You need input a project name! '
+        exit
+      end
+
+      _new_dest = "#{workspace}/#{_project_name}"
+
+      _template_src = "#{File.dirname(__FILE__)}/template_files"
+
+      if File.exists?(_new_dest) && File.directory?(_new_dest)
+        puts "error: #{_new_dest} already exists! Please check !"
+      else
+        FileUtils.cp_r("#{_template_src}", "#{_new_dest}")
+
+        system "cd #{_new_dest} && bundle install && bundle exec docwu generate"
+        puts "cd #{_new_dest} && bundle install && bundle exec docwu generate"
+
+        puts "[#{_new_dest}] already success created!"
+      end
+
+      exit
     end
 
     _default_params = {
       '-p'        => [5656],
       '-a'        => ['0.0.0.0'],
-      '-c'        => ["#{workspace}/config.yml"],
-      'DOCWU_ENV' => ['development'],
-      '-d'        => [(args.delete('-d') == '-d')]
+      '-c'        => ["#{workspace}/config.yml"]
     }
 
     if ['--help', '-h'].include?(_command)
       puts "docwu:"
 
+      puts "   * docwu new [project_name]  ; eg.: docwu new project"
+      puts ""
+      puts "   * docwu g, docwu generate, docwu s, docwu server"
       _default_params.each do |_cmd, _cfg|
         puts "    #{_cmd}, #{_cfg[1]} (default: #{_cfg[0]})"
       end

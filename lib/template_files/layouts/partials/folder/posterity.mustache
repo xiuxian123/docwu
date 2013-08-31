@@ -1,0 +1,49 @@
+{{! 这里是每个folder的单位 }}
+<div class='folder'>
+  <div class='self'>
+    <span class='info'>
+      共 <span class='high'>{{ folders_count }}</span> 个子文件夹
+      共 <span class='high'>{{ posts_count }}</span> 篇文档
+      {{# limit_posts_more? }}
+        <a href='{{ url }}' title='{{title}}'>阅读&gt;&gt;</a>
+      {{/ limit_posts_more? }}
+    </span>
+    <h3>
+      <a href='{{ url }}' title='{{title}}'>{{ name }}</a>
+    </h3>
+  </div>
+
+  <a href='{{ url }}' title='{{title}}'>
+    <img src='/assets/images/shared/folder/text.png' alt='' class='icon clearfix'/>
+  </a>
+
+  <div class='children'>
+    {{# folders_any? }}
+    <span class='sub-folders'>
+      {{# folders }}
+      <a href='{{ url }}' title='{{title}}'>
+        <img src='/assets/images/shared/folder/text.png' alt='' class='sub-icon'/>
+        {{ name }}
+      </a>
+      {{/ folders }}
+    </span>
+    {{/ folders_any? }}
+
+    {{# limit_posts_any? }}
+    <ul class='posts clearfix'>
+      {{# limit_posts }}
+      {{> partials/folder/post_outline }}
+      {{/ limit_posts }}
+    </ul>
+    {{/ limit_posts_any? }}
+
+    {{# limit_posts_more? }}
+    <div>
+      <a href='{{ url }}' title='{{title}}'>阅读更多&gt;&gt;</a>
+    </div>
+    {{/ limit_posts_more? }}
+
+  </div>
+
+</div>
+

@@ -105,7 +105,7 @@ module Docwu
     end
 
     def title
-      self.page_data['title'] || self.url
+      self.page_data['title'] || self.name
     end
 
     # 渲染

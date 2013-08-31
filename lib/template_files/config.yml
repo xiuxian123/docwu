@@ -1,0 +1,18 @@
+docwu:
+  routes:              
+    folders:          
+      'doc/help':                "document/help"
+    topics:
+      index.markdown:      "index.html"
+    layouts:
+      index:               "index.mustache"
+      post:                "post.mustache"
+      folder:              "folder.mustache"
+  worker:
+    site:
+      name:            "document Work Up"
+    copyright:
+      year:            '2013'
+      name:            "docwu"
+      content:         "document work up and work up"
+

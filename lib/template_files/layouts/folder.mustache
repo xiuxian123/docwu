@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+    <title>文件夹: {{ reader.folder.name }} - {{ worker.site.name }}</title>
+    <script type='text/javascript' src='/assets/javascripts/application.js'></script>
+    <script type='text/javascript' src='/assets/javascripts/document_folder.js'></script>
+    <link href="/assets/stylesheets/application.css" media="all" rel="stylesheet" />
+    <link href="/assets/stylesheets/document_folder.css" media="all" rel="stylesheet" />
+  </head>
+  <body>
+    {{> partials/shared/header }}
+
+    <div id='container' class='wrapper clearfix'>
+
+      <!-- container-main begin -->
+      <div class='container-main clearfix'>
+        <div class='path'>
+          <a href='/index.html'>首页</a>
+
+          {{# reader.folders }}
+          &gt;
+          <a href='{{ url }}' title='{{title}}'>{{ name }}</a>
+          {{/ reader.folders }}
+
+          &gt;
+          {{# reader.folder }}
+            {{ name }}
+          {{/ reader.folder }}
+        </div>
+
+        <div class='information'>
+          {{# reader.folder }}
+          <h1>{{ name }}</h1>
+          {{/ reader.folder }}
+
+          <div class='bar'>
+            共 <span class='high'>{{ reader.folder.folders_count }}</span> 个子文件夹
+            共 <span class='high'>{{ reader.folder.posts_count }}</span> 篇文档
+          </div>
+        </div>
+
+        <div class='posterity'>
+          {{#  reader.folder.folders_any? }}
+          <div class='folders'>
+            {{#  reader.folder.folders }}
+               {{> partials/folder/posterity }}
+            {{/ reader.folder.folders }}
+          </div>
+          {{/ reader.folder.folders_any? }}
+
+          {{#  reader.folder.posts_any? }}
+          <ul class='folders'>
+            {{#  reader.folder.posts }}
+              {{> partials/folder/post_outline }}
+            {{/ reader.folder.posts }}
+          </ul>
+          {{/ reader.folder.posts_any? }}
+
+        </div>
+      </div> <!-- container-main end -->
+    </div>
+
+    {{> partials/shared/copyright }}
+
+  </body>
+</html>

@@ -3,31 +3,6 @@ require 'date'
 module Docwu
   class Worker
 
-    # - folder1
-    #   - assets:
-    #     + javascripts
-    #     + images
-    #     + files
-    #   - doc:
-    #     + 市场相关
-    #     = 个人相关
-    #       + happy
-    #       + john
-    #       - xiaozhang
-    #         + learning
-    #     + 基本文档
-    # - folder2
-    #   - layouts:
-    #     - application.mustache
-    #   - doc:
-    #     + 基础资料
-    # - assets:
-    #   + javascripts
-    #   + images
-    # - layouts:
-    #   - application.mustache
-    #
-
     attr_reader :layouts, :data, :deploy_path, :folders, :topics
 
     def initialize
@@ -96,9 +71,12 @@ module Docwu
     def generate
       # 删除要输出的路径
       FileUtils.rm_rf(self.deploy_path)
+      FileUtils.mkdir_p(self.deploy_path)
 
-      # 复制 assets 文件进去
-      FileUtils.cp_r("#{plain_path('/assets')}", "#{self.deploy_path}/")
+      ::Docwu::Utils.cp_r("#{plain_path('/assets/')}", "#{self.deploy_path}")
+
+      # 复制静态文件里去
+      ::Docwu::Utils.cp_r("#{plain_path('/static/')}", "#{self.deploy_path}")
 
       self.folders.each do |folder|
         folder.generate

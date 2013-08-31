@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+    <title>
+      {{# reader.topic }}{{ name }}{{/ reader.topic }} - {{ worker.site.name }}
+    </title>
+    <script type='text/javascript' src='/assets/javascripts/application.js'></script>
+    <link href="/assets/stylesheets/application.css" media="all" rel="stylesheet" />
+    <link href="/assets/stylesheets/index.css" media="all" rel="stylesheet" />
+  </head>
+<body>
+  {{> partials/shared/header }}
+
+  <div id='container' class='wrapper clearfix'>
+    {{# reader.global.folders_any? }}
+      <div class='posterity'>
+        <div class='folders'>
+          {{# reader.global.folders }}
+          {{> partials/folder/posterity }}
+          {{/ reader.global.folders }}
+        </div>
+      </div>
+    {{/ reader.global.folders_any? }}
+  </div>
+
+  {{> partials/shared/copyright }}
+</body>
+</html>

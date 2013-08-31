@@ -1,0 +1,3 @@
+source "http://rubygems.org"
+
+gem 'docwu', '0.0.7'

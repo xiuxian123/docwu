@@ -2,6 +2,12 @@
 module Docwu
   class Utils
     class << self
+      def cp_r src, dest
+        if File.exists?(src)
+          FileUtils.cp_r(src, dest)
+        end
+      end
+
       def hash_deep_merge(hash, other_hash)
         hash.merge(other_hash) do |key, oldval, newval|
           oldval = oldval.to_hash if oldval.respond_to?(:to_hash)
