@@ -25,13 +25,18 @@ module Docwu
 
     _command = args.shift
 
-    _useful_cmds = ['g', 'generate', 's', 'server', '-h', '--help', 'new']
+    _useful_cmds = ['g', 'generate', 's', 'server', '-h', '--help', 'new', '-v', '--version']
 
     unless _useful_cmds.include?(_command)
       puts "command #{_command} is not available, not in (#{_useful_cmds.join('|')})"
       exit
     end
 
+    if ['-v', '--version'].include?(_command)
+      puts "docwu: #{::Docwu::VERSION}"
+
+      exit
+    end
 
     if ['new'].include?(_command)
       _project_name = args.shift

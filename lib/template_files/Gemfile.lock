@@ -3,7 +3,7 @@ GEM
   specs:
     coderay (1.0.9)
     daemons (1.1.9)
-    docwu (0.0.7)
+    docwu (0.0.10)
       coderay
       mustache_render
       nokogiri
@@ -25,4 +25,4 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  docwu (= 0.0.7)
+  docwu (= 0.0.10)
