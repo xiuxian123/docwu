@@ -73,10 +73,10 @@ module Docwu
       FileUtils.rm_rf(self.deploy_path)
       FileUtils.mkdir_p(self.deploy_path)
 
-      ::Docwu::Utils.cp_r("#{plain_path('/assets/')}", "#{self.deploy_path}")
+      ::Docwu::Utils.cp_r("#{plain_path('/assets')}", "#{self.deploy_path}/assets")
 
       # 复制静态文件里去
-      ::Docwu::Utils.cp_r("#{plain_path('/static/')}", "#{self.deploy_path}")
+      ::Docwu::Utils.cp_r("#{plain_path('/static')}", "#{self.deploy_path}/static")
 
       self.folders.each do |folder|
         folder.generate
