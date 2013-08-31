@@ -1,4 +1,5 @@
 # -*- encoding : utf-8 -*-
+require "#{File.dirname(__FILE__)}/docwu/version"
 require "#{File.dirname(__FILE__)}/docwu/config"
 require "#{File.dirname(__FILE__)}/docwu/route"   # 定制页面路由器
 require "#{File.dirname(__FILE__)}/docwu/topic"
