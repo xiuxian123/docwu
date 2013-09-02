@@ -41,17 +41,6 @@ module Docwu
 
         _html = ::RedcarpetCompat.new(content_text, *_mark_options).to_html
 
-        #  renderer = Redcarpet::Markdown.new(Redcarpet::Render::HTML, {
-        #    :tables           => true,
-        #    :hard_wrap        => true,
-        #    :autolink         => true,
-        #    :no_intraemphasis => true,
-        #    :fenced_code      => true,
-        #    :gh_blockcode     => true
-        #  })
-
-        #  _html = renderer.render(content_text)
-
         # 获取一个html代码的目录结果
         _catalogs_result = ::Docwu::Utils.html_catalogable(_html)
 
