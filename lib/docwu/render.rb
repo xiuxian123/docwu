@@ -2,6 +2,7 @@
 require 'redcarpet'
 require 'coderay'
 require "nokogiri"
+# require "pdfkit"
 
 module Docwu
   class Render
@@ -10,6 +11,12 @@ module Docwu
         self.new.generate(*args)
       end
     end
+
+    # 生成pdf
+    # https://github.com/pdfkit/PDFKit
+    # def generate_pdf options={}
+    #   kit = ::PDFKit.new(::File.new(options[:dest]))
+    # end
 
     #
     # usage:
@@ -37,9 +44,39 @@ module Docwu
 
       case marktype
       when 'markdown'
-        _mark_options = [:hard_wrap, :autolink, :no_intraemphasis, :fenced_code, :gh_blockcode, :tables]
+        _mark_options = [
+          :hard_wrap,
+          :autolink,
+          :no_intraemphasis,
+          :fenced_code,
+          :gh_blockcode,
+          :tables,
+          :footnotes,
+          :superscript,
+          :underline,
+          :strikethrough,
+          :space_after_headers,
+          :quote,
+          :highlight
+        ]
 
         _html = ::RedcarpetCompat.new(content_text, *_mark_options).to_html
+
+        # markdown = Redcarpet::Markdown.new(
+        #   Redcarpet::Render::HTML,
+        #   :autolink            => true,
+        #   :space_after_headers => true,    # 头部必须有个空格
+        #   :fenced_code_blocks  => true,    # ```括起来的代码段落
+        #   :strikethrough       => true,    # ~~ 删除
+        #   :superscript         => true,
+        #   :underline           => true,
+        #   :highlight           => true,
+        #   :quote               => true,
+        #   :footnotes           => true,
+        #   :hard_wrap           => true
+        # )
+
+        # _html = markdown.render(content_text)
 
         # 获取一个html代码的目录结果
         _catalogs_result = ::Docwu::Utils.html_catalogable(_html)

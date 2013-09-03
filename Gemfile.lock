@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    docwu (0.0.13)
+    docwu (0.0.14)
       coderay
       mustache_render
       nokogiri
@@ -11,7 +11,7 @@ PATH
 GEM
   remote: http://rubygems.org/
   specs:
-    coderay (1.0.9)
+    coderay (1.1.0)
     daemons (1.1.9)
     eventmachine (1.0.3)
     mini_portile (0.5.1)
