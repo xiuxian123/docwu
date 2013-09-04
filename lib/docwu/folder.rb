@@ -22,7 +22,7 @@ module Docwu
 
       @name = ::Docwu::Utils.filename(@src)
 
-      @dest = "#{self.worker.deploy_path}/#{self.path}"
+      @dest = "#{self.worker.tmp_deploy_path}/#{self.path}"
       @index_dest = "#{self.dest}/index.html"
       # -------------------------------------
 

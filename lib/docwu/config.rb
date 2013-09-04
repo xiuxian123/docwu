@@ -53,6 +53,10 @@ module Docwu
       @deploy_path ||= ("#{self.workspace}/_deploy")
     end
 
+    def tmp_path
+      @tmp_path ||= ("#{self.workspace}/_tmp")
+    end
+
   end
 end
 

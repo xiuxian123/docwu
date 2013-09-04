@@ -3,10 +3,11 @@ require 'date'
 module Docwu
   class Worker
 
-    attr_reader :layouts, :data, :deploy_path, :folders, :topics
+    attr_reader :layouts, :data, :deploy_path, :folders, :topics, :tmp_path
 
     def initialize
       @deploy_path = ::Docwu.config.deploy_path   # 部署路径
+      @tmp_path = ::Docwu.config.tmp_path
 
       @data = {
         'worker' => {
@@ -69,22 +70,35 @@ module Docwu
     # 输出: 
     #   TODO: 先生成临时目录， 然后 -> deploy
     def generate
-      # 删除要输出的路径
-      FileUtils.rm_rf(self.deploy_path)
-      FileUtils.mkdir_p(self.deploy_path)
+      begin
+        # 删除要输出的路径
+        FileUtils.mkdir_p(self.tmp_deploy_path)
 
-      ::Docwu::Utils.cp_r("#{plain_path('/assets')}", "#{self.deploy_path}/assets")
+        ::Docwu::Utils.cp_r("#{plain_path('/assets')}", "#{self.tmp_deploy_path}/assets")
 
-      # 复制静态文件里去
-      ::Docwu::Utils.cp_r("#{plain_path('/static')}", "#{self.deploy_path}/static")
+        # 复制静态文件里去
+        ::Docwu::Utils.cp_r("#{plain_path('/static')}", "#{self.tmp_deploy_path}/static")
 
-      self.folders.each do |folder|
-        folder.generate
+        self.folders.each do |folder|
+          folder.generate
+        end
+
+        self.topics.each do |topic|
+          topic.generate
+        end
+
+      rescue Exception => exception
+        FileUtils.rm_rf(self.tmp_deploy_path)
+        raise "#{exception}"
+      else
+        FileUtils.rm_rf(self.deploy_path)
+        FileUtils.mv(self.tmp_deploy_path, self.deploy_path)
+      ensure
       end
+    end
 
-      self.topics.each do |topic|
-        topic.generate
-      end
+    def tmp_deploy_path
+      @tmp_deploy_path ||= "#{self.tmp_path}/_deploy/#{Time.now.to_i}"
     end
 
     def plain_path(path)

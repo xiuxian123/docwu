@@ -53,7 +53,7 @@ module Docwu
 
       @path = "#{_filename_extless}.#{_extend_name}"
       @url  = "/#{@path}"
-      @dest = "#{self.worker.deploy_path}/#{self.path}"
+      @dest = "#{self.worker.tmp_deploy_path}/#{self.path}"
 
       @file_name = ::Docwu::Utils.filename(_filename_extless)
 

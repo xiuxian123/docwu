@@ -3,6 +3,7 @@ log/*.log
 pkg/
 
 /_deploy
+/_tmp
 
 /.rvmrc
 /tags

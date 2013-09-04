@@ -1,4 +1,4 @@
 # -*- encoding : utf-8 -*-
 module Docwu
-  VERSION = "0.0.14"
+  VERSION = "0.0.15"
 end

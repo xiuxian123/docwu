@@ -17,7 +17,7 @@ module Docwu
       _filename_extless = ::Docwu::Utils.filename_extless(self.path)
 
       @url  = "/#{@path}"
-      @dest = "#{self.worker.deploy_path}/#{self.path}"
+      @dest = "#{self.worker.tmp_deploy_path}/#{self.path}"
 
       @file_name = ::Docwu::Utils.filename(_filename_extless)
 
