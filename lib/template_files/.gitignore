@@ -1,9 +1,6 @@
-.bundle/
-log/*.log
-pkg/
-
 /_deploy
 /_tmp
 
 /.rvmrc
 /tags
+/log/*.log
