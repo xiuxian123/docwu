@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module Docwu
   class Topic
     attr_reader :worker, :dest, :path, :src, :url, :content_data, :file_name, :name, :title

@@ -56,8 +56,8 @@ module Docwu
       else
         FileUtils.cp_r("#{_template_src}", "#{_new_dest}")
 
-        system "cd #{_new_dest} && bundle install && bundle exec docwu generate"
         puts "cd #{_new_dest} && bundle install && bundle exec docwu generate"
+        system "cd #{_new_dest} && bundle install && bundle exec docwu generate"
 
         puts "[#{_new_dest}] already success created!"
       end
