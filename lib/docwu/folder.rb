@@ -48,7 +48,7 @@ module Docwu
       end
 
       self.posts.sort! { |a, b| b.ranking <=> a.ranking }
-      self.posts.sort! { |a, b| b.datetime <=> a.datetime }
+      self.posts.sort! { |a, b| b.datetime.to_s <=> a.datetime.to_s }
 
       #  TODO: 是否从index文件中读取data呢?
     end
